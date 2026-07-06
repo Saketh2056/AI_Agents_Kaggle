@@ -1,0 +1,3 @@
+# Install with:  pip install -r requirements.txt
+google-adk==2.3.0   # Google's Agent Development Kit — the multi-agent framework
+mcp==1.28.1         # Model Context Protocol — powers our MCP tool server

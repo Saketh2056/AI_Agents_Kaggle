@@ -1,0 +1,17 @@
+# Keep secrets and clutter OUT of GitHub.
+# The .env file holds your private API key — it must NEVER be uploaded.
+.env
+.venv/
+__pycache__/
+*.pyc
+
+# personal data stays personal — the agent's memory files
+agents/studybuddy/tasks.json
+agents/studybuddy/quiz_history.json
+agents/studybuddy/notes.json
+
+# ADK's local session database (contains chat history)
+**/.adk/
+
+# local editor configuration
+.claude/

@@ -1,0 +1,628 @@
+<!-- StudyBuddy - AI Tutor (Aether dashboard) -->
+<!DOCTYPE html><html class="h-full" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>StudyBuddy - AI Tutor</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<style>
+        body { font-family: 'Geist', sans-serif; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #e2e2e2; border-radius: 9999px; }
+        ::-webkit-scrollbar-thumb:hover { background: #c2c6d6; }
+        @keyframes blink { 0%,60%,100% { opacity: .25; } 30% { opacity: 1; } }
+        /* AI-generated markdown */
+        .md p { margin-bottom: 8px; } .md p:last-child { margin-bottom: 0; }
+        .md ol { list-style: decimal; margin: 6px 0 8px 22px; }
+        .md ul { list-style: disc; margin: 6px 0 8px 22px; }
+        .md li { margin-bottom: 4px; } .md strong { font-weight: 600; }
+        .md code { font-family: ui-monospace, Menlo, monospace; font-size: .9em; background: #eeeeee; padding: 1px 5px; border-radius: 4px; }
+        .md table { border-collapse: collapse; width: 100%; margin: 8px 0; font-size: 14px; }
+        .md th, .md td { border: 1px solid #c2c6d6; padding: 6px 10px; text-align: left; vertical-align: top; }
+        .md th { background: #f3f3f3; font-weight: 600; }
+</style>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: { extend: {
+            "colors": {
+                    "tertiary-fixed": "#dae2fd", "surface-tint": "#005ac2", "on-error": "#ffffff", "error-container": "#ffdad6",
+                    "secondary-fixed-dim": "#b7c8e1", "primary-fixed": "#d8e2ff", "surface-container": "#eeeeee",
+                    "on-secondary-fixed": "#0b1c30", "secondary-fixed": "#d3e4fe", "surface-bright": "#f9f9f9", "background": "#f9f9f9",
+                    "on-secondary": "#ffffff", "error": "#ba1a1a", "outline": "#727785", "outline-variant": "#c2c6d6",
+                    "surface-container-lowest": "#ffffff", "primary-fixed-dim": "#adc6ff", "on-background": "#1a1c1c",
+                    "on-error-container": "#93000a", "on-primary": "#ffffff", "tertiary-container": "#6c748b",
+                    "surface-container-high": "#e8e8e8", "primary": "#0058be", "tertiary-fixed-dim": "#bec6e0",
+                    "secondary-container": "#d0e1fb", "surface-container-low": "#f3f3f3", "on-primary-container": "#fefcff",
+                    "tertiary": "#545c72", "inverse-surface": "#2f3131", "secondary": "#505f76", "on-tertiary-fixed": "#131b2e",
+                    "on-surface": "#1a1c1c", "on-secondary-container": "#54647a", "surface-dim": "#dadada",
+                    "on-tertiary-fixed-variant": "#3f465c", "surface-container-highest": "#e2e2e2", "inverse-on-surface": "#f1f1f1",
+                    "inverse-primary": "#adc6ff", "on-tertiary": "#ffffff", "primary-container": "#2170e4",
+                    "on-tertiary-container": "#fefcff", "surface": "#f9f9f9", "on-surface-variant": "#424754",
+                    "on-secondary-fixed-variant": "#38485d", "surface-variant": "#e2e2e2", "on-primary-fixed": "#001a42",
+                    "on-primary-fixed-variant": "#004395"
+            },
+            "borderRadius": { "DEFAULT": "1rem", "lg": "2rem", "xl": "3rem", "full": "9999px" },
+            "spacing": { "xxl": "64px", "sm": "8px", "lg": "24px", "xs": "4px", "unit": "4px", "md": "16px", "xl": "40px", "container-margin": "32px", "gutter": "24px" },
+            "fontFamily": { "headline-lg": ["Geist"], "body-lg": ["Geist"], "display": ["Geist"], "headline-lg-mobile": ["Geist"], "label-sm": ["Geist"], "headline-md": ["Geist"], "body-md": ["Geist"], "label-md": ["Geist"] },
+            "fontSize": {
+                    "headline-lg": ["32px", { "lineHeight": "1.3", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                    "body-lg": ["18px", { "lineHeight": "1.7", "letterSpacing": "0.01em", "fontWeight": "400" }],
+                    "display": ["48px", { "lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "600" }],
+                    "headline-lg-mobile": ["28px", { "lineHeight": "1.3", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                    "label-sm": ["12px", { "lineHeight": "1.4", "letterSpacing": "0.05em", "fontWeight": "600" }],
+                    "headline-md": ["24px", { "lineHeight": "1.4", "letterSpacing": "-0.01em", "fontWeight": "500" }],
+                    "body-md": ["16px", { "lineHeight": "1.6", "letterSpacing": "0.01em", "fontWeight": "400" }],
+                    "label-md": ["14px", { "lineHeight": "1.5", "letterSpacing": "0.02em", "fontWeight": "500" }]
+            }
+        } }
+      }
+    </script>
+</head>
+<body class="bg-background text-on-background h-full flex overflow-hidden">
+<!-- SideNavBar -->
+<nav class="bg-surface-container-low h-screen w-64 hidden md:flex flex-col gap-lg p-lg border-r border-outline-variant/30 transition-all duration-300">
+<div class="mb-xl">
+<span class="font-headline-md text-headline-md text-primary tracking-tight">StudyBuddy</span>
+<div class="mt-sm"><span class="text-on-surface-variant font-label-sm text-label-sm uppercase">Precision Learning</span></div>
+</div>
+<ul class="flex-1 flex flex-col gap-md">
+<li><a id="navNewchat" class="flex items-center gap-md px-md py-sm rounded-lg transition-all font-label-md text-label-md text-on-surface-variant hover:bg-surface-container-high hover:text-primary" href="#">
+<span class="material-symbols-outlined">edit_square</span> New chat</a></li>
+<li><a class="navitem flex items-center gap-md px-md py-sm rounded-lg hover:bg-surface-container-high transition-all text-on-surface-variant hover:text-primary font-label-md text-label-md" data-view="workspace" href="#">
+<span class="material-symbols-outlined">forum</span> Chats</a></li>
+<li><a class="navitem flex items-center gap-md px-md py-sm rounded-lg hover:bg-surface-container-high transition-all text-on-surface-variant hover:text-primary font-label-md text-label-md" data-view="tasks" href="#">
+<span class="material-symbols-outlined">event_note</span> Tasks</a></li>
+<li><a class="navitem flex items-center gap-md px-md py-sm rounded-lg hover:bg-surface-container-high transition-all text-on-surface-variant hover:text-primary font-label-md text-label-md" data-view="quizzes" href="#">
+<span class="material-symbols-outlined">quiz</span> Quizzes</a></li>
+<li><a id="navTour" class="flex items-center gap-md px-md py-sm rounded-lg hover:bg-surface-container-high transition-all text-on-surface-variant hover:text-primary font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined">help</span> How to use</a></li>
+</ul>
+</nav>
+
+<!-- Main Content Area -->
+<main class="flex-1 flex flex-col h-full overflow-hidden">
+<!-- TopNavBar -->
+<header class="bg-background flex justify-between items-center w-full px-xxl py-lg max-w-full z-10 flex-shrink-0">
+<div></div>
+<div class="flex items-center gap-md">
+<select id="model" title="Model" class="bg-surface-container-low text-on-surface-variant border border-outline-variant/30 rounded-full px-md py-xs font-label-md text-label-md focus:outline-none"></select>
+<span id="status" class="flex items-center gap-xs font-label-sm text-label-sm text-on-surface-variant"><span class="light w-2 h-2 rounded-full" style="background:#22a559"></span><span id="statustext">online</span></span>
+</div>
+</header>
+
+<!-- LANDING (default) -->
+<div id="landing" class="flex-1 flex flex-col items-center justify-center px-container-margin md:px-xxl w-full max-w-4xl mx-auto -mt-xxl">
+<h1 class="font-display text-display text-on-background mb-xl text-center">What are we learning today?</h1>
+<div class="w-full max-w-2xl bg-surface-container-lowest border border-outline-variant/30 rounded-full flex items-center p-unit shadow-[0px_4px_20px_rgba(0,0,0,0.02)] focus-within:border-primary focus-within:shadow-[0px_4px_20px_rgba(0,88,190,0.05)] transition-all duration-300">
+<button id="heroAdd" aria-label="Add attachment" class="w-10 h-10 flex items-center justify-center text-on-surface-variant hover:text-primary transition-colors flex-shrink-0 rounded-full hover:bg-surface-container-low ml-xs" title="Attach notes">
+<span class="material-symbols-outlined text-[22px]" style="font-variation-settings:'FILL' 0, 'wght' 300">add</span></button>
+<input id="heroBox" class="flex-1 bg-transparent border-none focus:ring-0 text-body-md font-body-md text-on-surface placeholder:text-outline-variant px-sm py-sm" placeholder="Start a new session or ask a question..." style="outline:none;" type="text">
+<button id="heroSend" aria-label="Send" class="w-10 h-10 flex items-center justify-center text-on-primary bg-primary rounded-full hover:bg-primary-container transition-colors flex-shrink-0 mr-xs">
+<span class="material-symbols-outlined text-[20px]" style="font-variation-settings:'FILL' 0, 'wght' 300">arrow_upward</span></button>
+</div>
+<!-- what StudyBuddy can do — click any card to try it -->
+<p class="w-full max-w-2xl text-left font-label-sm text-label-sm uppercase tracking-widest text-on-surface-variant mt-xl mb-sm">Examples</p>
+<div class="grid grid-cols-2 md:grid-cols-3 gap-sm w-full max-w-2xl">
+<button class="chip flex flex-col items-start gap-xs p-md rounded bg-surface-container-lowest border border-outline-variant/30 hover:border-primary/50 text-left transition-colors" data-q="Break down my machine learning course project into steps">
+<span class="material-symbols-outlined text-primary">checklist</span>
+<span class="font-label-md text-label-md font-semibold text-on-surface">Plan a project</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant font-normal normal-case tracking-normal">Big assignment → small steps</span>
+</button>
+<button class="chip flex flex-col items-start gap-xs p-md rounded bg-surface-container-lowest border border-outline-variant/30 hover:border-primary/50 text-left transition-colors" data-q="Add a task: finish my DBMS assignment, due Friday">
+<span class="material-symbols-outlined text-primary">event_available</span>
+<span class="font-label-md text-label-md font-semibold text-on-surface">Track deadlines</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant font-normal normal-case tracking-normal">Tasks it remembers forever</span>
+</button>
+<button class="chip flex flex-col items-start gap-xs p-md rounded bg-surface-container-lowest border border-outline-variant/30 hover:border-primary/50 text-left transition-colors" data-q="Quiz me with 5 questions on operating systems">
+<span class="material-symbols-outlined text-primary">quiz</span>
+<span class="font-label-md text-label-md font-semibold text-on-surface">Quiz yourself</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant font-normal normal-case tracking-normal">/quiz any topic — scores saved</span>
+</button>
+<button class="chip flex flex-col items-start gap-xs p-md rounded bg-surface-container-lowest border border-outline-variant/30 hover:border-primary/50 text-left transition-colors" data-q="/flashcards SQL joins">
+<span class="material-symbols-outlined text-primary">style</span>
+<span class="font-label-md text-label-md font-semibold text-on-surface">Flashcards</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant font-normal normal-case tracking-normal">/flashcards from any topic</span>
+</button>
+<button class="chip flex flex-col items-start gap-xs p-md rounded bg-surface-container-lowest border border-outline-variant/30 hover:border-primary/50 text-left transition-colors" data-q="Make revision notes on SQL joins and save them">
+<span class="material-symbols-outlined text-primary">note_stack</span>
+<span class="font-label-md text-label-md font-semibold text-on-surface">Revision notes</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant font-normal normal-case tracking-normal">Summarize notes, files, topics</span>
+</button>
+<button class="chip flex flex-col items-start gap-xs p-md rounded bg-surface-container-lowest border border-outline-variant/30 hover:border-primary/50 text-left transition-colors" data-q="Help me understand recursion — guide me step by step, don't give me the answer">
+<span class="material-symbols-outlined text-primary">psychology</span>
+<span class="font-label-md text-label-md font-semibold text-on-surface">Get tutored</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant font-normal normal-case tracking-normal">Guides you — never spoils</span>
+</button>
+</div>
+</div>
+
+<!-- CHAT (revealed after first message) -->
+<div id="chatview" class="flex-1 hidden overflow-hidden">
+<!-- conversation stream -->
+<section class="flex-1 flex flex-col h-full bg-surface-container-lowest w-full">
+<div id="chat" class="flex-1 overflow-y-auto px-lg py-lg"><div id="messages" class="max-w-3xl mx-auto w-full space-y-md"></div></div>
+<div class="px-lg py-sm bg-surface-container-lowest border-t border-outline-variant/10">
+<div class="max-w-3xl mx-auto w-full">
+<div id="attach-chip" style="display:none" class="mb-xs items-center gap-xs pl-md pr-xs py-xs rounded-full bg-surface-container border border-outline-variant/30 font-label-sm text-label-sm">
+<span id="attach-name"></span><button id="attach-remove" class="w-5 h-5 rounded-full bg-surface-container-high hover:bg-surface-variant flex items-center justify-center text-[11px]" title="Remove">✕</button>
+</div>
+<div class="relative flex items-end gap-xs bg-surface-container rounded-[1.5rem] pl-xs pr-xs py-xs border border-outline-variant/30 focus-within:border-primary transition-colors">
+<button id="attach" class="text-outline hover:text-primary transition-colors rounded-full hover:bg-surface-variant flex items-center justify-center w-9 h-9 flex-shrink-0 self-end" title="Attach notes"><span class="material-symbols-outlined text-[20px]" style="font-variation-settings:'FILL' 0, 'wght' 300">attach_file</span></button>
+<textarea id="box" class="flex-1 bg-transparent border-none focus:ring-0 resize-none py-sm px-xs font-body-md text-body-md text-on-surface placeholder:text-outline min-h-[36px] max-h-[160px] leading-[20px]" placeholder="Ask a question or explain your thinking..." rows="1"></textarea>
+<button id="send" class="text-on-primary bg-primary rounded-full hover:opacity-90 transition-opacity flex items-center justify-center w-9 h-9 flex-shrink-0 self-end disabled:opacity-40" title="Send"><span class="material-symbols-outlined text-[18px]" style="font-variation-settings:'FILL' 0, 'wght' 300">arrow_upward</span></button>
+</div>
+<p class="text-center font-label-sm text-label-sm text-on-surface-variant mt-xs">Try <b>/quiz</b> · <b>/flashcards</b> · <b>/vocab</b> · <b>/plan</b> — or attach notes with the paperclip</p>
+</div>
+</div>
+</section>
+</div>
+
+<!-- TASKS PAGE -->
+<div id="tasksview" class="flex-1 hidden overflow-y-auto">
+<div class="max-w-2xl mx-auto w-full px-lg py-xl">
+<h2 class="font-headline-md text-headline-md text-on-surface mb-xs">Tasks</h2>
+<p id="tasksSummary" class="font-label-md text-label-md text-on-surface-variant mb-md"></p>
+<div class="h-1.5 bg-surface-container-high rounded-full overflow-hidden mb-lg"><div id="tasksBar" class="h-full bg-primary rounded-full transition-all" style="width:0%"></div></div>
+<div class="flex items-center gap-sm mb-lg">
+<input id="newTaskTitle" placeholder="Add a task…" class="flex-1 bg-surface-container-lowest border border-outline-variant/40 rounded-full px-md py-sm text-[15px] focus:outline-none focus:border-primary">
+<input id="newTaskDue" placeholder="due (e.g. Friday)" class="w-36 bg-surface-container-lowest border border-outline-variant/40 rounded-full px-md py-sm text-[15px] focus:outline-none focus:border-primary">
+<select id="newTaskPrio" title="Priority" class="bg-surface-container-lowest border border-outline-variant/40 rounded-full px-sm py-sm font-label-md text-label-md focus:outline-none">
+<option value="3">P3</option><option value="2">P2</option><option value="1">P1</option>
+</select>
+<button id="newTaskAdd" title="Add task" class="w-10 h-10 rounded-full bg-primary text-on-primary flex items-center justify-center hover:bg-primary-container transition-colors flex-shrink-0"><span class="material-symbols-outlined text-[20px]">add</span></button>
+</div>
+<div id="tasksList" class="flex flex-col gap-sm"></div>
+<p class="font-label-sm text-label-sm text-on-surface-variant mt-lg text-center">Drag to reorder · click a task or date to edit · click the flag to change priority · or just ask the AI in Chats</p>
+</div>
+</div>
+
+<!-- QUIZZES PAGE -->
+<div id="quizzesview" class="flex-1 hidden overflow-y-auto">
+<div class="max-w-2xl mx-auto w-full px-lg py-xl">
+<h2 class="font-headline-md text-headline-md text-on-surface mb-xs">Quizzes</h2>
+<p id="quizSummary" class="font-label-md text-label-md text-on-surface-variant mb-lg"></p>
+<div id="quizList" class="flex flex-col gap-sm"></div>
+</div>
+</div>
+</main>
+<input type="file" id="file" accept="image/png,image/jpeg,image/webp,.pdf,.txt,.md" hidden>
+
+<!-- API key dialog (shown when the site opens) -->
+<div id="keymodal" class="fixed inset-0 bg-black/30 backdrop-blur-sm z-50 hidden items-center justify-center p-lg">
+<div class="bg-surface-container-lowest rounded shadow-[0_8px_30px_rgba(0,0,0,0.12)] p-xl w-full max-w-md">
+<div class="flex items-center gap-sm mb-md">
+<span class="material-symbols-outlined text-primary">key</span>
+<h2 class="font-headline-md text-headline-md text-on-surface">Connect Gemini</h2>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant mb-md">StudyBuddy thinks with Google Gemini. Paste your free API key from <a class="text-primary underline" href="https://aistudio.google.com/apikey" rel="noopener" target="_blank">Google AI Studio</a>.</p>
+<input id="keyinput" type="password" placeholder="Paste your API key…" autocomplete="off" class="w-full bg-surface-container-low border border-outline-variant/50 rounded-full px-lg py-md font-body-md text-body-md focus:outline-none focus:border-primary mb-xs">
+<p id="keyerror" class="font-label-sm text-label-sm text-error mb-sm" style="min-height:16px"></p>
+<div class="flex items-center justify-end gap-sm">
+<button id="keyskip" class="hidden px-lg py-sm rounded-full text-on-surface-variant font-label-md text-label-md hover:bg-surface-container-low transition-colors">Continue with saved key</button>
+<button id="keysave" class="px-lg py-sm rounded-full bg-primary text-on-primary font-label-md text-label-md hover:bg-primary-container transition-colors">Save &amp; start</button>
+</div>
+<p class="font-label-sm text-label-sm text-on-surface-variant mt-md">Kept in memory on your machine only — never uploaded or written to disk.</p>
+</div>
+</div>
+
+<!-- How-to-use tour (shown on first visit; reopen via "How to use") -->
+<div id="tour" class="fixed inset-0 bg-black/30 backdrop-blur-sm z-50 hidden items-center justify-center p-lg">
+<div class="bg-surface-container-lowest rounded shadow-[0_8px_30px_rgba(0,0,0,0.12)] p-xl w-full max-w-md text-center">
+<span id="tourIcon" class="material-symbols-outlined text-primary" style="font-size:48px">diversity_3</span>
+<h2 id="tourTitle" class="font-headline-md text-headline-md text-on-surface mt-md mb-sm"></h2>
+<p id="tourBody" class="text-[15px] leading-relaxed text-on-surface-variant mb-lg" style="min-height:96px"></p>
+<div id="tourDots" class="flex justify-center gap-xs mb-lg"></div>
+<div class="flex justify-between items-center">
+<button id="tourPrev" class="px-lg py-sm rounded-full border border-outline-variant text-on-surface-variant font-label-md text-label-md hover:bg-surface-container-low transition-colors">Previous</button>
+<button id="tourNext" class="px-lg py-sm rounded-full bg-primary text-on-primary font-label-md text-label-md hover:bg-primary-container transition-colors">Next</button>
+</div>
+</div>
+</div>
+
+<script>
+const API="http://localhost:8000", APP="studybuddy", USER="web";
+let SID="s-"+Math.random().toString(36).slice(2,10);
+const messages=document.getElementById("messages"), chatBox=document.getElementById("chat");
+const box=document.getElementById("box"), send=document.getElementById("send");
+const landing=document.getElementById("landing"), chatview=document.getElementById("chatview");
+const heroBox=document.getElementById("heroBox"), heroSend=document.getElementById("heroSend");
+const NAME={studybuddy:"StudyBuddy",planner:"Planner",scheduler:"Scheduler",quizmaster:"Quiz Master",summarizer:"Summarizer",tutor:"Tutor"};
+
+/* markdown */
+function esc(s){return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+function inl(s){return s.replace(/\*\*([^*]+)\*\*/g,"<strong>$1</strong>").replace(/\*([^*]+)\*/g,"<em>$1</em>").replace(/`([^`]+)`/g,"<code>$1</code>");}
+function md(src){
+  const L=esc(src.trim()).split(/\n/);let h="",ul=false,ol=false,tb=false,hd=false;
+  const cl=()=>{if(ul){h+="</ul>";ul=false;}if(ol){h+="</ol>";ol=false;}if(tb){h+="</table>";tb=false;hd=false;}};
+  for(const line of L){
+    if(/^\s*\|.*\|\s*$/.test(line)){ if(/^\s*\|[\s:|-]+\|\s*$/.test(line))continue;
+      const c=line.trim().replace(/^\|/,"").replace(/\|$/,"").split("|");
+      if(!tb){if(ul||ol)cl();h+="<table>";tb=true;hd=false;} const t=hd?"td":"th";
+      h+="<tr>"+c.map(x=>`<${t}>`+inl(x.trim())+`</${t}>`).join("")+"</tr>";hd=true;continue;}
+    if(tb)cl();
+    const o=line.match(/^\s*(\d+)[.)]\s+(.*)/),u=line.match(/^\s*[-*•]\s+(.*)/);
+    if(o){if(!ol){cl();h+='<ol start="'+o[1]+'">';ol=true;}h+="<li>"+inl(o[2])+"</li>";}
+    else if(u){if(!ul){cl();h+="<ul>";ul=true;}h+="<li>"+inl(u[1])+"</li>";}
+    else if(line.trim()===""){cl();} else{cl();h+="<p>"+inl(line)+"</p>";}
+  } cl();return h;
+}
+function scrollDown(){chatBox.scrollTop=chatBox.scrollHeight;}
+
+function agentRow(author,text){
+  const who=(author in NAME)?author:"studybuddy";
+  const r=document.createElement("div");r.className="flex items-start gap-md max-w-[90%]";
+  r.innerHTML=`<div class="w-7 h-7 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center flex-shrink-0"><span class="material-symbols-outlined text-[16px]">smart_toy</span></div>
+    <div class="bg-surface-container-low rounded px-md py-sm">
+      <div class="font-label-sm text-label-sm text-on-surface-variant mb-xs">${NAME[who]}</div>
+      <div class="md text-[15px] leading-relaxed text-on-surface"></div></div>`;
+  r.querySelector(".md").innerHTML=md(text);messages.appendChild(r);scrollDown();
+}
+function userRow(text){
+  const r=document.createElement("div");r.className="flex items-start gap-md justify-end";
+  const b=document.createElement("div");b.className="bg-primary text-on-primary rounded px-md py-sm max-w-[80%] text-[15px] leading-relaxed whitespace-pre-wrap";
+  b.textContent=text;r.appendChild(b);messages.appendChild(r);scrollDown();
+}
+function note(text){
+  const d=document.createElement("div");d.className="flex justify-center";
+  d.innerHTML=`<span class="inline-flex items-center gap-xs px-sm py-xs rounded-full bg-surface-container-highest text-on-surface-variant font-label-sm text-label-sm border border-outline-variant/30"><span class="material-symbols-outlined text-[14px]">sync_alt</span>${text}</span>`;
+  messages.appendChild(d);scrollDown();
+}
+let typingEl=null;
+function showTyping(label){
+  hideTyping();typingEl=document.createElement("div");typingEl.className="flex items-start gap-md max-w-[90%]";
+  typingEl.innerHTML=`<div class="w-8 h-8 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center flex-shrink-0"><span class="material-symbols-outlined text-[18px]">smart_toy</span></div>
+    <div class="bg-surface-container-low rounded px-md py-md flex items-center gap-1">
+      <i class="w-1.5 h-1.5 rounded-full bg-outline" style="animation:blink 1.2s infinite"></i>
+      <i class="w-1.5 h-1.5 rounded-full bg-outline" style="animation:blink 1.2s infinite .2s"></i>
+      <i class="w-1.5 h-1.5 rounded-full bg-outline" style="animation:blink 1.2s infinite .4s"></i>
+      ${label?`<span class="font-label-sm text-label-sm text-on-surface-variant ml-2">${label}</span>`:""}</div>`;
+  messages.appendChild(typingEl);scrollDown();
+}
+function hideTyping(){if(typingEl){typingEl.remove();typingEl=null;}}
+const wait=ms=>new Promise(r=>setTimeout(r,ms));
+
+/* shown when a reply fails after retries: quota exhausted or model overloaded.
+   Gives the user the two fixes as one-click buttons. */
+function limitError(){
+  limitHit=true;
+  const row=document.createElement("div");
+  row.className="flex items-start gap-md max-w-[90%]";
+  row.innerHTML=`<div class="w-7 h-7 rounded-full bg-error-container text-on-error-container flex items-center justify-center flex-shrink-0"><span class="material-symbols-outlined text-[16px]">error</span></div>
+    <div class="bg-surface-container-low rounded px-md py-sm">
+      <div class="font-label-sm text-label-sm text-on-surface-variant mb-xs">StudyBuddy</div>
+      <div class="text-[15px] leading-relaxed text-on-surface mb-sm"><strong>Model limit reached.</strong> The free tier gives each model a small daily allowance. Switch to another model or use a different API key — your tasks and notes are safe.</div>
+      <div class="flex gap-sm">
+        <button class="act-switch px-md py-xs rounded-full bg-primary text-on-primary font-label-md text-label-md hover:bg-primary-container transition-colors">Switch model</button>
+        <button class="act-key px-md py-xs rounded-full border border-outline-variant text-on-surface font-label-md text-label-md hover:bg-surface-container-low transition-colors">New API key</button>
+      </div></div>`;
+  row.querySelector(".act-switch").addEventListener("click",switchToNextModel);
+  row.querySelector(".act-key").addEventListener("click",()=>openKeyModal(true));
+  messages.appendChild(row);scrollDown();
+}
+async function switchToNextModel(){
+  const n=modelSel.options.length;if(!n)return;
+  modelSel.selectedIndex=(modelSel.selectedIndex+1)%n;
+  modelSel.dispatchEvent(new Event("change"));
+}
+
+/* ---------- views: workspace / tasks / quizzes ---------- */
+let currentView="workspace";
+function setNav(name){
+  /* name is a view ("workspace" / "tasks" / "quizzes") or "newchat" */
+  const nn=document.getElementById("navNewchat");
+  const nOn=name==="newchat";
+  nn.classList.toggle("bg-secondary-container",nOn);
+  nn.classList.toggle("text-primary",nOn);
+  nn.classList.toggle("font-semibold",nOn);
+  nn.classList.toggle("text-on-surface-variant",!nOn);
+  document.querySelectorAll(".navitem").forEach(a=>{
+    const on=a.dataset.view===name;
+    a.classList.toggle("bg-secondary-container",on);
+    a.classList.toggle("text-primary",on);
+    a.classList.toggle("font-semibold",on);
+    a.classList.toggle("text-on-surface-variant",!on);
+  });
+}
+function hideAllViews(){
+  landing.classList.add("hidden");
+  chatview.classList.add("hidden");chatview.classList.remove("flex");
+  document.getElementById("tasksview").classList.add("hidden");
+  document.getElementById("quizzesview").classList.add("hidden");
+}
+/* The last real conversation (one with at least one message) is kept here
+   so that clicking "New chat" doesn't destroy it — it only gets replaced
+   once the user actually sends a message in the new draft chat. */
+let savedSID=null, savedHTML=null, inDraft=false;
+
+function showView(name){
+  currentView=name;hideAllViews();setNav(name);
+  if(name==="workspace"){
+    if(messages.children.length){chatview.classList.remove("hidden");chatview.classList.add("flex");}
+    else if(inDraft&&savedHTML){
+      /* the user opened a new chat but never sent anything — going back to
+         Chats should show the old conversation, not an empty draft */
+      inDraft=false;SID=savedSID;messages.innerHTML=savedHTML;
+      chatview.classList.remove("hidden");chatview.classList.add("flex");
+      ensureSession();
+    }
+    else landing.classList.remove("hidden");
+  }else if(name==="tasks"){document.getElementById("tasksview").classList.remove("hidden");renderTasksPage();}
+  else{document.getElementById("quizzesview").classList.remove("hidden");renderQuizzesPage();}
+}
+
+/* switch landing -> chat */
+function showChat(){
+  inDraft=false;
+  currentView="workspace";hideAllViews();setNav("workspace");
+  chatview.classList.remove("hidden");chatview.classList.add("flex");
+}
+function go(text){ if(!text&&!attachment)return; showChat(); ask(text); }
+
+/* new chat: opens a blank draft without discarding the current conversation.
+   The old chat is only really replaced once a message is sent here. */
+function newChat(){
+  if(messages.children.length){savedSID=SID;savedHTML=messages.innerHTML;}
+  inDraft=true;
+  SID="s-"+Math.random().toString(36).slice(2,10);
+  sessionReady=false;
+  messages.innerHTML="";
+  hideTyping();
+  clearAttachment();
+  box.value="";heroBox.value="";
+  currentView="workspace";hideAllViews();
+  landing.classList.remove("hidden");
+  setNav("newchat");
+  ping();
+  heroBox.focus();
+}
+
+/* talk to the agent */
+async function ensureSession(){await fetch(`${API}/apps/${APP}/users/${USER}/sessions/${SID}`,{method:"POST",headers:{"Content-Type":"application/json"},body:"{}"});}
+async function ask(text){
+  const parts=[];let shown=text;
+  if(attachment){parts.push({inlineData:{mimeType:attachment.mimeType,data:attachment.data}});shown="📎 "+attachment.name+(text?"\n"+text:"");if(!text)text="Here is a file with my study material. Please help me with it.";clearAttachment();}
+  parts.push({text});
+  userRow(shown);box.value="";heroBox.value="";autosize();box.disabled=true;send.disabled=true;showTyping();
+  try{
+    let events=null;
+    for(let a=1;a<=4;a++){
+      const res=await fetch(`${API}/run`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({appName:APP,userId:USER,sessionId:SID,newMessage:{role:"user",parts}})});
+      if(res.ok){events=await res.json();break;}
+      if(a<4){showTyping("high demand — retrying "+a+"/3");await wait(5000*a);}
+    }
+    hideTyping();
+    if(!events){
+      limitError();
+    }
+    else{
+      limitHit=false;
+      for(const ev of events)for(const p of (ev.content&&ev.content.parts)||[]){
+        if(p.functionCall&&p.functionCall.name==="transfer_to_agent"){const to=p.functionCall.args&&p.functionCall.args.agent_name;note("handed to "+(NAME[to]||to));}
+        if(p.text&&!ev.partial)agentRow(ev.author,p.text.trim());
+      }
+    }
+  }catch(e){hideTyping();limitError();}
+  box.disabled=false;send.disabled=false;box.focus();ping();
+}
+
+/* status: online (green) / limit reached (amber) / offline (red) */
+let sessionReady=false, limitHit=false;
+async function ping(){
+  const light=document.querySelector("#status .light"),txt=document.getElementById("statustext");
+  try{
+    const r=await fetch(`${API}/list-apps`,{cache:"no-store"});if(!r.ok)throw 0;
+    if(!sessionReady){await ensureSession();sessionReady=true;}
+    if(limitHit){light.style.background="#f59e0b";txt.textContent="limit reached — switch model";}
+    else{light.style.background="#22a559";txt.textContent="online";}
+  }catch(e){sessionReady=false;light.style.background="#ba1a1a";txt.textContent="offline";}
+}
+
+/* live data (the agents' JSON memory files, served by the static server) */
+async function fj(u){try{const r=await fetch(u,{cache:"no-store"});if(!r.ok)return null;return await r.json();}catch(e){return null;}}
+
+/* ---------- Tasks page — Todoist-style, manages tasks directly (no AI) ---------- */
+const PRIO={1:{c:"#d93025",t:"P1"},2:{c:"#f59e0b",t:"P2"},3:{c:"#727785",t:"P3"}};
+async function taskApi(method,path,body){
+  const r=await fetch(`${API}${path}`,{method,headers:{"Content-Type":"application/json"},body:body?JSON.stringify(body):undefined});
+  return r.json();
+}
+/* click-to-edit: swap a span for an input; Enter/blur saves, Esc cancels */
+function inlineEdit(el,current,save){
+  const input=document.createElement("input");
+  input.value=current;
+  input.className="flex-1 min-w-0 bg-surface-container-low border border-primary/40 rounded px-xs text-[15px] focus:outline-none";
+  el.replaceWith(input);input.focus();input.select();
+  let finished=false;
+  const finish=commit=>{
+    if(finished)return;finished=true;
+    input.replaceWith(el);
+    const v=input.value.trim();
+    if(commit&&v&&v!==current)save(v);
+  };
+  input.addEventListener("keydown",e=>{if(e.key==="Enter")finish(true);else if(e.key==="Escape")finish(false);});
+  input.addEventListener("blur",()=>finish(true));
+}
+let dragId=null;
+async function renderTasksPage(){
+  const tasks=await fj(`${API}/tasks`);
+  const list=document.getElementById("tasksList"),bar=document.getElementById("tasksBar"),sum=document.getElementById("tasksSummary");
+  list.innerHTML="";
+  if(!tasks||!tasks.length){
+    sum.textContent="";bar.style.width="0%";
+    list.innerHTML=`<div class="bg-surface-container-lowest border border-outline-variant/30 rounded p-lg text-center"><p class="text-[15px] text-on-surface-variant">No tasks yet — add one above, or ask the AI in Chats.</p></div>`;
+    return;
+  }
+  const done=tasks.filter(t=>t.done).length;
+  sum.textContent=done+" of "+tasks.length+" done";
+  bar.style.width=Math.round(100*done/tasks.length)+"%";
+  for(const t of tasks){ /* file order = the user's manual order */
+    const p=PRIO[t.priority||3];
+    const row=document.createElement("div");
+    row.className="flex items-center gap-sm bg-surface-container-lowest border border-outline-variant/30 rounded px-sm py-sm";
+    row.draggable=true;row.dataset.id=t.id;
+    row.innerHTML=`<span class="material-symbols-outlined text-outline-variant cursor-grab" style="font-size:18px" title="Drag to reorder">drag_indicator</span>
+      <button class="tgl flex-shrink-0" title="${t.done?"Mark not done":"Mark done"}"><span class="material-symbols-outlined ${t.done?"text-primary":"text-outline"}">${t.done?"check_circle":"radio_button_unchecked"}</span></button>
+      <button class="pri flex-shrink-0" title="Priority ${p.t} — click to change"><span class="material-symbols-outlined" style="font-size:18px;color:${p.c}">flag</span></button>
+      <span class="ttl flex-1 min-w-0 truncate text-[15px] ${t.done?"line-through text-on-surface-variant":"text-on-surface"} cursor-text" title="Click to edit">${esc(t.task)}</span>
+      <span class="due font-label-sm text-label-sm text-on-surface-variant cursor-text whitespace-nowrap" title="Click to edit">${t.due_date?esc(String(t.due_date)):"no date"}</span>
+      <button class="del flex-shrink-0 text-outline hover:text-error transition-colors" title="Delete"><span class="material-symbols-outlined" style="font-size:18px">delete</span></button>`;
+    row.querySelector(".tgl").addEventListener("click",async()=>{await taskApi("PATCH",`/tasks/${t.id}`,{done:!t.done});renderTasksPage();});
+    row.querySelector(".pri").addEventListener("click",async()=>{const next={3:2,2:1,1:3}[t.priority||3];await taskApi("PATCH",`/tasks/${t.id}`,{priority:next});renderTasksPage();});
+    row.querySelector(".del").addEventListener("click",async()=>{await taskApi("DELETE",`/tasks/${t.id}`);renderTasksPage();});
+    row.querySelector(".ttl").addEventListener("click",e=>{inlineEdit(e.currentTarget,t.task,async v=>{await taskApi("PATCH",`/tasks/${t.id}`,{task:v});renderTasksPage();});});
+    row.querySelector(".due").addEventListener("click",e=>{inlineEdit(e.currentTarget,String(t.due_date||""),async v=>{await taskApi("PATCH",`/tasks/${t.id}`,{due_date:v});renderTasksPage();});});
+    row.addEventListener("dragstart",()=>{dragId=t.id;row.classList.add("opacity-50");});
+    row.addEventListener("dragend",()=>{dragId=null;row.classList.remove("opacity-50");});
+    row.addEventListener("dragover",e=>{e.preventDefault();row.classList.add("border-primary");});
+    row.addEventListener("dragleave",()=>row.classList.remove("border-primary"));
+    row.addEventListener("drop",async e=>{
+      e.preventDefault();row.classList.remove("border-primary");
+      if(dragId===null||dragId===t.id)return;
+      const ids=tasks.map(x=>x.id).filter(i=>i!==dragId);
+      ids.splice(ids.indexOf(t.id),0,dragId);
+      await taskApi("POST","/tasks/reorder",{order:ids});
+      renderTasksPage();
+    });
+    list.appendChild(row);
+  }
+}
+/* add-task form */
+async function addTaskFromForm(){
+  const title=document.getElementById("newTaskTitle");
+  const due=document.getElementById("newTaskDue");
+  const prio=document.getElementById("newTaskPrio");
+  const v=title.value.trim();if(!v)return;
+  await taskApi("POST","/tasks",{task:v,due_date:due.value.trim(),priority:parseInt(prio.value,10)});
+  title.value="";due.value="";prio.value="3";
+  renderTasksPage();title.focus();
+}
+
+/* Quizzes page */
+async function renderQuizzesPage(){
+  const quizzes=await fj("/agents/studybuddy/quiz_history.json");
+  const list=document.getElementById("quizList"),sum=document.getElementById("quizSummary");
+  list.innerHTML="";
+  if(!quizzes||!quizzes.length){
+    sum.textContent="";
+    list.innerHTML=`<div class="bg-surface-container-lowest border border-outline-variant/30 rounded p-lg text-center"><p class="text-[15px] text-on-surface-variant">No quizzes yet — go to Chats and try “/quiz operating systems”.</p></div>`;
+    return;
+  }
+  const avg=Math.round(quizzes.reduce((s,q)=>s+q.percent,0)/quizzes.length);
+  sum.textContent=quizzes.length+(quizzes.length===1?" quiz taken":" quizzes taken")+" · average "+avg+"%";
+  for(const q of [...quizzes].reverse()){
+    const row=document.createElement("div");
+    row.className="bg-surface-container-lowest border border-outline-variant/30 rounded px-md py-sm";
+    row.innerHTML=`<div class="flex justify-between items-baseline mb-xs"><span class="text-[15px] text-on-surface">${esc(q.topic)}</span><span class="font-label-sm text-label-sm text-on-surface-variant">${esc(String(q.date))} · ${q.score}/${q.total}</span></div>
+      <div class="h-1.5 bg-surface-container-high rounded-full overflow-hidden"><div class="h-full ${q.percent>=70?"bg-primary":"bg-error"}" style="width:${q.percent}%"></div></div>`;
+    list.appendChild(row);
+  }
+}
+
+/* model picker */
+const modelSel=document.getElementById("model");
+async function loadModels(){const info=await fj(`${API}/model`);if(!info)return;modelSel.innerHTML="";for(const m of info.allowed){const o=document.createElement("option");o.value=m;o.textContent=m.replace("gemini-","");o.selected=m===info.model;modelSel.appendChild(o);}}
+modelSel.addEventListener("change",async()=>{try{const r=await fetch(`${API}/model`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({model:modelSel.value})});const o=await r.json();if(o.status==="success"){note("model switched to "+o.model);limitHit=false;ping();}}catch(e){}});
+
+/* file attachments */
+let attachment=null;
+const fileInput=document.getElementById("file"),chipEl=document.getElementById("attach-chip"),chipName=document.getElementById("attach-name");
+function clearAttachment(){attachment=null;fileInput.value="";chipEl.style.display="none";}
+document.getElementById("attach").addEventListener("click",()=>fileInput.click());
+document.getElementById("heroAdd").addEventListener("click",()=>{showChat();fileInput.click();});
+document.getElementById("attach-remove").addEventListener("click",clearAttachment);
+fileInput.addEventListener("change",async()=>{
+  const f=fileInput.files[0];if(!f)return;
+  if(f.size>15*1024*1024){alert("Keep attachments under 15 MB.");clearAttachment();return;}
+  if(f.type.startsWith("text/")||f.name.endsWith(".md")||f.name.endsWith(".txt")){const tc=await f.text();showChat();box.value=(box.value?box.value+"\n\n":"")+"Here are my notes from “"+f.name+"”:\n"+tc.slice(0,20000);autosize();clearAttachment();box.focus();return;}
+  const buf=await f.arrayBuffer();let bin="";const by=new Uint8Array(buf);for(let i=0;i<by.length;i+=0x8000)bin+=String.fromCharCode.apply(null,by.subarray(i,i+0x8000));
+  attachment={name:f.name,mimeType:f.type||"application/pdf",data:btoa(bin)};chipName.textContent="📎 "+f.name;chipEl.style.display="inline-flex";showChat();box.focus();
+});
+
+/* API key dialog — asked when the site opens, applied live via POST /apikey */
+const keymodal=document.getElementById("keymodal"),keyinput=document.getElementById("keyinput"),keyerror=document.getElementById("keyerror");
+function openKeyModal(hasKey){
+  keymodal.classList.remove("hidden");keymodal.classList.add("flex");
+  document.getElementById("keyskip").classList.toggle("hidden",!hasKey);
+  setTimeout(()=>keyinput.focus(),50);
+}
+function closeKeyModal(){
+  keymodal.classList.add("hidden");keymodal.classList.remove("flex");
+  sessionStorage.setItem("sb_key_ok","1");
+  if(!localStorage.getItem("sb_tour_done"))openTour();
+  else heroBox.focus();
+}
+async function saveKey(){
+  const k=keyinput.value.trim();
+  if(!k){keyerror.textContent="Paste a key, or continue with the saved one.";return;}
+  try{
+    const r=await fetch(`${API}/apikey`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({key:k})});
+    const o=await r.json();
+    if(o.status==="success"){keyinput.value="";closeKeyModal();}
+    else keyerror.textContent=o.message||"That key was rejected.";
+  }catch(e){keyerror.textContent="Can't reach the server — run ./start.sh first.";}
+}
+document.getElementById("keysave").addEventListener("click",saveKey);
+document.getElementById("keyskip").addEventListener("click",closeKeyModal);
+keyinput.addEventListener("keydown",e=>{if(e.key==="Enter")saveKey();});
+
+/* composer + landing wiring */
+function autosize(){box.style.height="auto";box.style.height=Math.min(box.scrollHeight,160)+"px";}
+box.addEventListener("input",autosize);
+box.addEventListener("keydown",e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();const t=box.value.trim();if(t||attachment)go(t);}});
+send.addEventListener("click",()=>{const t=box.value.trim();if(t||attachment)go(t);});
+heroBox.addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();go(heroBox.value.trim());}});
+heroSend.addEventListener("click",()=>go(heroBox.value.trim()));
+document.querySelectorAll(".chip").forEach(b=>b.addEventListener("click",()=>go(b.dataset.q)));
+document.querySelectorAll(".navitem").forEach(a=>a.addEventListener("click",e=>{e.preventDefault();showView(a.dataset.view);}));
+document.getElementById("navNewchat").addEventListener("click",e=>{e.preventDefault();newChat();});
+document.getElementById("navTour").addEventListener("click",e=>{e.preventDefault();openTour();});
+document.getElementById("newTaskAdd").addEventListener("click",addTaskFromForm);
+["newTaskTitle","newTaskDue"].forEach(id=>document.getElementById(id).addEventListener("keydown",e=>{if(e.key==="Enter")addTaskFromForm();}));
+
+/* ---------- how-to-use tour ---------- */
+const TOUR=[
+  {i:"diversity_3",t:"Meet your agent team",b:"StudyBuddy is six AI agents working as a team. A Coordinator reads every message and hands it to the right specialist — Planner, Scheduler, Quiz Master, Summarizer, or Tutor. Watch for the “handed to …” chips in the chat."},
+  {i:"checklist",t:"Plan & track deadlines",b:"Say “Break down my ML project into steps” or “Add a task: DBMS assignment, due Friday”. Tasks are remembered permanently — see them any time in the Tasks page in the sidebar."},
+  {i:"quiz",t:"Test yourself",b:"Type /quiz and a topic. The Quiz Master asks one question at a time, explains exactly what you got wrong, and saves every score to your Quizzes page."},
+  {i:"note_stack",t:"Notes, flashcards & files",b:"Type /flashcards or /vocab with any topic, paste notes to summarize them, or attach a photo/PDF of study material with the paperclip. Say “save it” to keep notes forever."},
+  {i:"shield",t:"Safe & in your control",b:"Requests involving passwords or anything harmful are refused before the AI even runs. Your key and data stay on your machine. If a model hits its free daily limit, switch models at the top right."},
+];
+let tourIdx=0;
+const tourEl=document.getElementById("tour");
+function renderTour(){
+  const s=TOUR[tourIdx];
+  document.getElementById("tourIcon").textContent=s.i;
+  document.getElementById("tourTitle").textContent=s.t;
+  document.getElementById("tourBody").textContent=s.b;
+  document.getElementById("tourPrev").style.visibility=tourIdx?"visible":"hidden";
+  document.getElementById("tourNext").textContent=tourIdx===TOUR.length-1?"Get started":"Next";
+  document.getElementById("tourDots").innerHTML=TOUR.map((_,j)=>`<span class="w-2 h-2 rounded-full ${j===tourIdx?"bg-primary":"bg-surface-container-high"}"></span>`).join("");
+}
+function openTour(){tourIdx=0;renderTour();tourEl.classList.remove("hidden");tourEl.classList.add("flex");}
+function closeTour(){tourEl.classList.add("hidden");tourEl.classList.remove("flex");localStorage.setItem("sb_tour_done","1");heroBox.focus();}
+document.getElementById("tourNext").addEventListener("click",()=>{if(tourIdx===TOUR.length-1)closeTour();else{tourIdx++;renderTour();}});
+document.getElementById("tourPrev").addEventListener("click",()=>{if(tourIdx>0){tourIdx--;renderTour();}});
+
+/* boot */
+(async function(){
+  setNav("newchat"); /* default page is New Chat */
+  await ping();loadModels();
+  /* keep whichever page is open in sync with the agents' memory files */
+  setInterval(()=>{if(currentView==="tasks")renderTasksPage();else if(currentView==="quizzes")renderQuizzesPage();},3000);
+  setInterval(ping,4000);
+  /* ask for the Gemini API key when the site opens (once per browser session),
+     then show the how-to-use tour on the very first visit */
+  if(!sessionStorage.getItem("sb_key_ok")){
+    const st=await fj(`${API}/apikey`);
+    openKeyModal(!!(st&&st.configured));
+  }else if(!localStorage.getItem("sb_tour_done")){
+    openTour();
+  }else{
+    heroBox.focus();
+  }
+})();
+</script>
+</body></html>
