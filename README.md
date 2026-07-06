@@ -92,8 +92,8 @@ Requirements: Python 3.10+ and a free Gemini API key
 ([get one here](https://aistudio.google.com/apikey)).
 
 ```bash
-git clone <this-repo>
-cd <this-repo>
+git clone https://github.com/Saketh2056/AI_Agents_Kaggle.git
+cd AI_Agents_Kaggle
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
