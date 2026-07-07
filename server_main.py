@@ -14,6 +14,7 @@ team to a sibling model gives a fresh allowance — no restart needed.
 Run with:  python server_main.py     (or just ./start.sh)
 """
 
+import json
 import os
 import re
 
@@ -197,6 +198,17 @@ def update_task(task_id: int, body: TaskPatch) -> dict:
 @app.delete("/tasks/{task_id}")
 def remove_task(task_id: int) -> dict:
     return sb_tools.remove_task(task_id)
+
+
+@app.delete("/quizzes/{index}")
+def delete_quiz(index: int) -> dict:
+    """Remove one quiz result by its position in the history (Quizzes page)."""
+    history = sb_tools._load_json(sb_tools.QUIZ_FILE)
+    if 0 <= index < len(history):
+        removed = history.pop(index)
+        sb_tools.QUIZ_FILE.write_text(json.dumps(history, indent=2))
+        return {"status": "success", "removed": removed}
+    return {"status": "error", "message": "No quiz result at that position."}
 
 
 @app.post("/tasks/reorder")

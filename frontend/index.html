@@ -169,13 +169,10 @@
 <div class="flex items-center gap-sm mb-lg">
 <input id="newTaskTitle" placeholder="Add a task…" class="flex-1 bg-surface-container-lowest border border-outline-variant/40 rounded-full px-md py-sm text-[15px] focus:outline-none focus:border-primary">
 <input id="newTaskDue" placeholder="due (e.g. Friday)" class="w-36 bg-surface-container-lowest border border-outline-variant/40 rounded-full px-md py-sm text-[15px] focus:outline-none focus:border-primary">
-<select id="newTaskPrio" title="Priority" class="bg-surface-container-lowest border border-outline-variant/40 rounded-full px-sm py-sm font-label-md text-label-md focus:outline-none">
-<option value="3">P3</option><option value="2">P2</option><option value="1">P1</option>
-</select>
 <button id="newTaskAdd" title="Add task" class="w-10 h-10 rounded-full bg-primary text-on-primary flex items-center justify-center hover:bg-primary-container transition-colors flex-shrink-0"><span class="material-symbols-outlined text-[20px]">add</span></button>
 </div>
 <div id="tasksList" class="flex flex-col gap-sm"></div>
-<p class="font-label-sm text-label-sm text-on-surface-variant mt-lg text-center">Drag to reorder · click a task or date to edit · click the flag to change priority · or just ask the AI in Chats</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant mt-lg text-center">Drag to reorder · click a task or date to edit · or just ask the AI in Chats</p>
 </div>
 </div>
 
@@ -298,10 +295,14 @@ function limitError(){
         <button class="act-switch px-md py-xs rounded-full bg-primary text-on-primary font-label-md text-label-md hover:bg-primary-container transition-colors">Switch model</button>
         <button class="act-key px-md py-xs rounded-full border border-outline-variant text-on-surface font-label-md text-label-md hover:bg-surface-container-low transition-colors">New API key</button>
       </div></div>`;
-  row.querySelector(".act-switch").addEventListener("click",switchToNextModel);
-  row.querySelector(".act-key").addEventListener("click",()=>openKeyModal(true));
   messages.appendChild(row);scrollDown();
 }
+/* Delegated so the buttons keep working even after a conversation is
+   saved and restored via innerHTML (which drops per-element listeners). */
+messages.addEventListener("click",e=>{
+  if(e.target.closest(".act-switch"))switchToNextModel();
+  else if(e.target.closest(".act-key"))openKeyModal(true);
+});
 async function switchToNextModel(){
   const n=modelSel.options.length;if(!n)return;
   modelSel.selectedIndex=(modelSel.selectedIndex+1)%n;
@@ -424,7 +425,6 @@ async function ping(){
 async function fj(u){try{const r=await fetch(u,{cache:"no-store"});if(!r.ok)return null;return await r.json();}catch(e){return null;}}
 
 /* ---------- Tasks page — Todoist-style, manages tasks directly (no AI) ---------- */
-const PRIO={1:{c:"#d93025",t:"P1"},2:{c:"#f59e0b",t:"P2"},3:{c:"#727785",t:"P3"}};
 async function taskApi(method,path,body){
   const r=await fetch(`${API}${path}`,{method,headers:{"Content-Type":"application/json"},body:body?JSON.stringify(body):undefined});
   return r.json();
@@ -459,18 +459,15 @@ async function renderTasksPage(){
   sum.textContent=done+" of "+tasks.length+" done";
   bar.style.width=Math.round(100*done/tasks.length)+"%";
   for(const t of tasks){ /* file order = the user's manual order */
-    const p=PRIO[t.priority||3];
     const row=document.createElement("div");
     row.className="flex items-center gap-sm bg-surface-container-lowest border border-outline-variant/30 rounded px-sm py-sm";
     row.draggable=true;row.dataset.id=t.id;
     row.innerHTML=`<span class="material-symbols-outlined text-outline-variant cursor-grab" style="font-size:18px" title="Drag to reorder">drag_indicator</span>
       <button class="tgl flex-shrink-0" title="${t.done?"Mark not done":"Mark done"}"><span class="material-symbols-outlined ${t.done?"text-primary":"text-outline"}">${t.done?"check_circle":"radio_button_unchecked"}</span></button>
-      <button class="pri flex-shrink-0" title="Priority ${p.t} — click to change"><span class="material-symbols-outlined" style="font-size:18px;color:${p.c}">flag</span></button>
       <span class="ttl flex-1 min-w-0 truncate text-[15px] ${t.done?"line-through text-on-surface-variant":"text-on-surface"} cursor-text" title="Click to edit">${esc(t.task)}</span>
       <span class="due font-label-sm text-label-sm text-on-surface-variant cursor-text whitespace-nowrap" title="Click to edit">${t.due_date?esc(String(t.due_date)):"no date"}</span>
       <button class="del flex-shrink-0 text-outline hover:text-error transition-colors" title="Delete"><span class="material-symbols-outlined" style="font-size:18px">delete</span></button>`;
     row.querySelector(".tgl").addEventListener("click",async()=>{await taskApi("PATCH",`/tasks/${t.id}`,{done:!t.done});renderTasksPage();});
-    row.querySelector(".pri").addEventListener("click",async()=>{const next={3:2,2:1,1:3}[t.priority||3];await taskApi("PATCH",`/tasks/${t.id}`,{priority:next});renderTasksPage();});
     row.querySelector(".del").addEventListener("click",async()=>{await taskApi("DELETE",`/tasks/${t.id}`);renderTasksPage();});
     row.querySelector(".ttl").addEventListener("click",e=>{inlineEdit(e.currentTarget,t.task,async v=>{await taskApi("PATCH",`/tasks/${t.id}`,{task:v});renderTasksPage();});});
     row.querySelector(".due").addEventListener("click",e=>{inlineEdit(e.currentTarget,String(t.due_date||""),async v=>{await taskApi("PATCH",`/tasks/${t.id}`,{due_date:v});renderTasksPage();});});
@@ -493,10 +490,9 @@ async function renderTasksPage(){
 async function addTaskFromForm(){
   const title=document.getElementById("newTaskTitle");
   const due=document.getElementById("newTaskDue");
-  const prio=document.getElementById("newTaskPrio");
   const v=title.value.trim();if(!v)return;
-  await taskApi("POST","/tasks",{task:v,due_date:due.value.trim(),priority:parseInt(prio.value,10)});
-  title.value="";due.value="";prio.value="3";
+  await taskApi("POST","/tasks",{task:v,due_date:due.value.trim()});
+  title.value="";due.value="";
   renderTasksPage();title.focus();
 }
 
@@ -512,13 +508,18 @@ async function renderQuizzesPage(){
   }
   const avg=Math.round(quizzes.reduce((s,q)=>s+q.percent,0)/quizzes.length);
   sum.textContent=quizzes.length+(quizzes.length===1?" quiz taken":" quizzes taken")+" · average "+avg+"%";
-  for(const q of [...quizzes].reverse()){
+  quizzes.forEach((q,idx)=>{ /* idx = position in the real history array */
     const row=document.createElement("div");
     row.className="bg-surface-container-lowest border border-outline-variant/30 rounded px-md py-sm";
-    row.innerHTML=`<div class="flex justify-between items-baseline mb-xs"><span class="text-[15px] text-on-surface">${esc(q.topic)}</span><span class="font-label-sm text-label-sm text-on-surface-variant">${esc(String(q.date))} · ${q.score}/${q.total}</span></div>
+    row.innerHTML=`<div class="flex justify-between items-center mb-xs gap-sm">
+        <span class="text-[15px] text-on-surface flex-1 min-w-0 truncate">${esc(q.topic)}</span>
+        <span class="font-label-sm text-label-sm text-on-surface-variant whitespace-nowrap">${esc(String(q.date))} · ${q.score}/${q.total}</span>
+        <button class="qdel flex-shrink-0 text-outline hover:text-error transition-colors" title="Remove this result"><span class="material-symbols-outlined" style="font-size:18px">delete</span></button>
+      </div>
       <div class="h-1.5 bg-surface-container-high rounded-full overflow-hidden"><div class="h-full ${q.percent>=70?"bg-primary":"bg-error"}" style="width:${q.percent}%"></div></div>`;
-    list.appendChild(row);
-  }
+    row.querySelector(".qdel").addEventListener("click",async()=>{await taskApi("DELETE",`/quizzes/${idx}`);renderQuizzesPage();});
+    list.prepend(row); /* newest first, but keep real indexes intact */
+  });
 }
 
 /* model picker */
